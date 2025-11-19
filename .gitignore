@@ -1,0 +1,14 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+.env
+.env.local
+
+# Google service account credentials
+*-*.json
+credentials.json
+service-account.json
+google-credentials.json
+*.credentials.json
+
