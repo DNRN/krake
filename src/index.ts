@@ -6,12 +6,15 @@ import { WorkingGroups } from './working-groups';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const weeks = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26];
+const numberOfWorkingGroups = 6;
+
 // Middleware
 app.use(express.json());
 
 // Routes
 app.get('/', (req: Request, res: Response) => {
-    res.json({ message: 'Hello, TypeScript with Express!' });
+    res.json({ message: 'Krake API' });
 });
 
 app.get('/api/health', (req: Request, res: Response) => {
@@ -24,7 +27,7 @@ app.get('/api/grupper', async (req: Request, res: Response) => {
         const google = new GoogleSheetsClient();
         await google.initialize();
         const members = await Members(google);
-        const workingGroups = await WorkingGroups(members.filter(m => m.weight > 0), [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13], 4);
+        const workingGroups = await WorkingGroups(members.filter(m => m.weight > 0), weeks, numberOfWorkingGroups);
 
         if (save) {
             await google.write('Grupper!A2:D10', workingGroups.map(wg => [wg.id, wg.name, wg.members.map(m => `${m.name}-${m.household}`).join(','), wg.weeks.join(',')]));
