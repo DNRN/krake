@@ -12,6 +12,16 @@ const numberOfWorkingGroups = 6;
 // Middleware
 app.use(express.json());
 
+// Utility function to shuffle an array
+function shuffle<T>(array: T[]): T[] {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
 // Routes
 app.get('/', (req: Request, res: Response) => {
     res.json({ message: 'Krake API' });
@@ -26,7 +36,8 @@ app.get('/api/grupper', async (req: Request, res: Response) => {
     try {
         const google = new GoogleSheetsClient();
         await google.initialize();
-        const members = await Members(google);
+        const members = shuffle(await Members(google));
+        
         const workingGroups = await WorkingGroups(members.filter(m => m.weight > 0), weeks, numberOfWorkingGroups);
 
         if (save) {
